@@ -1,6 +1,6 @@
 # github_script
 
-usage: ```github_script.py [-h] [-m] [-l] {p1,p2}```
+usage: ```github_script.py [-h] [-m] [-l] [-c] {p1,p2}```
 
 Add Milestones or Labels to Github projects
 
@@ -16,6 +16,7 @@ Add Milestones or Labels to Github projects
     -h, --help        show this help message and exit
     -m, --milestone   Add the list of milestones to the repos
     -l, --label       Add the list of labels to the repos
+    -c, --clean       Clean the labels and/or milestones (if -l or -m had been set) of the repos: Remove the labels or milestones that are not in the lists
 ```
 
 ###Milestones:
