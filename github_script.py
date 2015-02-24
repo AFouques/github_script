@@ -1,25 +1,11 @@
 #!/bin/python
 
+import settings
+
 import requests, json, argparse
 from argparse import RawTextHelpFormatter
 
-GITHUB_TOKEN = '<YOUR GITHUB TOKEN>' # <------------------------REPLACE
-OWNER = "<YOUR / YOUR COMPANY GITHUB ACCOUNT NAME>"# <----------REPLACE
-
-headers = {'Authorization': 'token ' + GITHUB_TOKEN}
-
-project1_list = [ "repo1",# <--------------------REPLACE names and args
-                "repo2"]  # <--|
-                          #    |
-project2_list = [ "repo3",# <--|
-                "repo4"]  # <--|
-
-milestone_list = [ "Milestone1",# <------------REPLACE milestones names
-    "Milestone2" ]              # <--|
-label_dictionnary = {
-    "Label1"   :"FF0000",# <------------REPLACE labels names and colors
-    "Label2" :"00FF00"   # <--|
-}
+headers = {'Authorization': 'token ' + settings.GITHUB_TOKEN}
 
 def project_loop_milestones (project, repo_list):
     print ""
@@ -29,18 +15,18 @@ def project_loop_milestones (project, repo_list):
     for repo in repo_list:
         if args.clean:
             repo_clean_milestones(repo)
-        for milestone in milestone_list:
-            url = 'https://api.github.com/repos/%s/%s/milestones' % (OWNER, repo)
+        for milestone in settings.milestone_list:
+            url = 'https://api.github.com/repos/%s/%s/milestones' % (settings.OWNER, repo)
             payload = {'title': milestone}
             r = requests.post(url, headers=headers, data=json.dumps(payload))
             print "called %s for milestone %s" % (r.url, milestone)
 
 def repo_clean_milestones(repo):
-    url = 'https://api.github.com/repos/%s/%s/milestones' % (OWNER, repo)
+    url = 'https://api.github.com/repos/%s/%s/milestones' % (settings.OWNER, repo)
     r = requests.get(url, headers=headers)
     for m in r.json():
-        if m.get('title') not in milestone_list:
-            url = 'https://api.github.com/repos/%s/%s/milestones/%d' % (OWNER, repo, m.get('number'))
+        if m.get('title') not in settings.milestone_list:
+            url = 'https://api.github.com/repos/%s/%s/milestones/%d' % (settings.OWNER, repo, m.get('number'))
             r = requests.delete(url, headers=headers)
             print "called %s to delete milestone %s" % (r.url, m.get('title'))
 
@@ -52,26 +38,26 @@ def project_loop_labels (project, repo_list):
     for repo in repo_list:
         if args.clean:
             repo_clean_labels(repo)
-        for label in label_dictionnary:
-            url = 'https://api.github.com/repos/%s/%s/labels' % (OWNER, repo)
-            payload = {'name': label, 'color': label_dictionnary[label]}
+        for label in settings.label_dictionnary:
+            url = 'https://api.github.com/repos/%s/%s/labels' % (settings.OWNER, repo)
+            payload = {'name': label, 'color': settings.label_dictionnary[label]}
             r = requests.post(url, headers=headers, data=json.dumps(payload))
             print "called %s for label %s" % (r.url, label)
 
 def repo_clean_labels(repo):
-    url = 'https://api.github.com/repos/%s/%s/labels' % (OWNER, repo)
+    url = 'https://api.github.com/repos/%s/%s/labels' % (settings.OWNER, repo)
     r = requests.get(url, headers=headers)
     for l in r.json():
-        if l.get('name') not in label_dictionnary:
-            url = 'https://api.github.com/repos/%s/%s/labels/%s' % (OWNER, repo, l.get('name'))
+        if l.get('name') not in settings.label_dictionnary:
+            url = 'https://api.github.com/repos/%s/%s/labels/%s' % (settings.OWNER, repo, l.get('name'))
             r = requests.delete(url, headers=headers)
             print "called %s to delete label %s" % (r.url, l.get('name'))
 
 epilog = 'Milestones:\n'
-for milestone in milestone_list:
+for milestone in settings.milestone_list:
     epilog += '    %s\n' % milestone
 epilog += '\nLabels:\n'
-for label in label_dictionnary:
+for label in settings.label_dictionnary:
     epilog += '    %s\n' % label
 
 parser = argparse.ArgumentParser(prog='github_script.py', description='Add Milestones or Labels to Github projects', 
@@ -86,14 +72,14 @@ parser.add_argument('project', choices=['p1', 'p2'], help='select one project:\n
 args = parser.parse_args()
 
 if args.milestone:
-    if args.project == 'p1':                                 # <--------------------REPLACE project names
-        project_loop_milestones("Project 1", project1_list)  # <--|
-    if args.project == 'p2':                                 # <--|
-        project_loop_milestones("Project 2", project2_list)  # <--|
+    if args.project == 'p1':                                          # <----REPLACE project names
+        project_loop_milestones("Project 1", settings.project1_list)  # <--|
+    if args.project == 'p2':                                          # <--|
+        project_loop_milestones("Project 2", settings.project2_list)  # <--|
 
 if args.label:
-    if args.project == 'p1':                                 # <--------------------REPLACE project names
-        project_loop_labels("Project 1", project1_list)      # <--|
-    if args.project == 'p2':                                 # <--|
-        project_loop_labels("Project 2", project2_list)      # <--|
+    if args.project == 'p1':                                          # <----REPLACE project names
+        project_loop_labels("Project 1", settings.project1_list)      # <--|
+    if args.project == 'p2':                                          # <--|
+        project_loop_labels("Project 2", settings.project2_list)      # <--|
 
