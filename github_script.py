@@ -60,26 +60,28 @@ epilog += '\nLabels:\n'
 for label in settings.label_dictionnary:
     epilog += '    %s\n' % label
 
+# prepare commands and help to select the project
+choices = []
+help = 'select one project:\n'
+for project in settings.PROJECTS:
+    choices.append(project.get('command'))
+    help += '%s = %s\n' % (project.get('command'), project.get('name'))
+
 parser = argparse.ArgumentParser(prog='github_script.py', description='Add Milestones or Labels to Github projects', 
         formatter_class=RawTextHelpFormatter, epilog=epilog)
 parser.add_argument('-m', '--milestone', action='store_true', help='Add the list of milestones to the repos')
 parser.add_argument('-l', '--label', action='store_true', help='Add the list of labels to the repos')
 parser.add_argument('-c', '--clean', action='store_true', help='Clean the labels and/or milestones (if -l or -m '
                             'had been set) of the repos: Remove the labels or milestones that are not in the lists')
-parser.add_argument('project', choices=['p1', 'p2'], help='select one project:\n' # <--------------------REPLACE project names
-                                                          'p1 = Project 1\n'      # <--|
-                                                          'p2 = Project 2')       # <--|
+parser.add_argument('project', choices=choices, help=help)
 args = parser.parse_args()
 
 if args.milestone:
-    if args.project == 'p1':                                          # <----REPLACE project names
-        project_loop_milestones("Project 1", settings.project1_list)  # <--|
-    if args.project == 'p2':                                          # <--|
-        project_loop_milestones("Project 2", settings.project2_list)  # <--|
+    for project in settings.PROJECTS:
+        if args.project == project.get('command'):
+            project_loop_milestones(project.get('name'), project.get('repos'))
 
 if args.label:
-    if args.project == 'p1':                                          # <----REPLACE project names
-        project_loop_labels("Project 1", settings.project1_list)      # <--|
-    if args.project == 'p2':                                          # <--|
-        project_loop_labels("Project 2", settings.project2_list)      # <--|
-
+    for project in settings.PROJECTS:
+        if args.project == project.get('command'):
+            project_loop_labels(project.get('name'), project.get('repos'))
