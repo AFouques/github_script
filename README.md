@@ -32,12 +32,12 @@ Add Milestones or Labels to Github projects
 ```
 
 ##How to use it:
-in the script_github.py, 
+in the file settings.py, 
 - REPLACE the Github Token by yours (created here : https://github.com/settings/applications#personal-access-tokens > "Generate new token")
-- REPLACE your /your company github account name
+- REPLACE your / your company github account name
+- REPLACE project names, command and associated repos
 - REPLACE milestones names
 - REPLACE labels names and colors
-- REPLACE project names
 
 set the script executable: 
 
