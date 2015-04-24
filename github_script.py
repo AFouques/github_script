@@ -20,6 +20,8 @@ def project_loop_milestones (project, repo_list):
             payload = {'title': milestone}
             r = requests.post(url, headers=headers, data=json.dumps(payload))
             print "called %s for milestone %s" % (r.url, milestone)
+            if args.verbose:
+                print r.text
 
 def repo_clean_milestones(repo):
     url = 'https://api.github.com/repos/%s/%s/milestones' % (settings.OWNER, repo)
@@ -29,6 +31,8 @@ def repo_clean_milestones(repo):
             url = 'https://api.github.com/repos/%s/%s/milestones/%d' % (settings.OWNER, repo, m.get('number'))
             r = requests.delete(url, headers=headers)
             print "called %s to delete milestone %s" % (r.url, m.get('title'))
+            if args.verbose:
+                print r.text
 
 def project_loop_labels (project, repo_list):
     print ""
@@ -43,6 +47,8 @@ def project_loop_labels (project, repo_list):
             payload = {'name': label, 'color': settings.label_dictionnary[label]}
             r = requests.post(url, headers=headers, data=json.dumps(payload))
             print "called %s for label %s" % (r.url, label)
+            if args.verbose:
+                print r.text
 
 def repo_clean_labels(repo):
     url = 'https://api.github.com/repos/%s/%s/labels' % (settings.OWNER, repo)
@@ -52,6 +58,8 @@ def repo_clean_labels(repo):
             url = 'https://api.github.com/repos/%s/%s/labels/%s' % (settings.OWNER, repo, l.get('name'))
             r = requests.delete(url, headers=headers)
             print "called %s to delete label %s" % (r.url, l.get('name'))
+            if args.verbose:
+                print r.text
 
 epilog = 'Milestones:\n'
 for milestone in settings.milestone_list:
@@ -69,6 +77,7 @@ for project in settings.PROJECTS:
 
 parser = argparse.ArgumentParser(prog='github_script.py', description='Add Milestones or Labels to Github projects', 
         formatter_class=RawTextHelpFormatter, epilog=epilog)
+parser.add_argument('-v', '--verbose', action='store_true', help='Show all answers to API calls')
 parser.add_argument('-m', '--milestone', action='store_true', help='Add the list of milestones to the repos')
 parser.add_argument('-l', '--label', action='store_true', help='Add the list of labels to the repos')
 parser.add_argument('-c', '--clean', action='store_true', help='Clean the labels and/or milestones (if -l or -m '
