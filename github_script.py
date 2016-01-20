@@ -8,10 +8,10 @@ from argparse import RawTextHelpFormatter
 headers = {'Authorization': 'token ' + settings.GITHUB_TOKEN}
 
 def project_loop_milestones (project, repo_list):
-    print ""
-    print "***********************"
-    print "%s"%(project)
-    print "***********************"
+    print ("")
+    print ("***********************")
+    print ("%s"%(project))
+    print ("***********************")
     for repo in repo_list:
         if args.clean:
             repo_clean_milestones(repo)
@@ -19,9 +19,9 @@ def project_loop_milestones (project, repo_list):
             url = 'https://api.github.com/repos/%s/%s/milestones' % (settings.OWNER, repo)
             payload = {'title': milestone}
             r = requests.post(url, headers=headers, data=json.dumps(payload))
-            print "called %s for milestone %s" % (r.url, milestone)
+            print ("called %s for milestone %s" % (r.url, milestone))
             if args.verbose:
-                print r.text
+                print (r.text)
 
 def repo_clean_milestones(repo):
     url = 'https://api.github.com/repos/%s/%s/milestones' % (settings.OWNER, repo)
@@ -30,15 +30,15 @@ def repo_clean_milestones(repo):
         if m.get('title') not in settings.milestone_list:
             url = 'https://api.github.com/repos/%s/%s/milestones/%d' % (settings.OWNER, repo, m.get('number'))
             r = requests.delete(url, headers=headers)
-            print "called %s to delete milestone %s" % (r.url, m.get('title'))
+            print ("called %s to delete milestone %s" % (r.url, m.get('title')))
             if args.verbose:
-                print r.text
+                print (r.text)
 
 def project_loop_labels (project, repo_list):
-    print ""
-    print "***********************"
-    print "%s"%(project)
-    print "***********************"
+    print ("")
+    print ("***********************")
+    print ("%s"%(project))
+    print ("***********************")
     for repo in repo_list:
         if args.clean:
             repo_clean_labels(repo)
@@ -46,9 +46,9 @@ def project_loop_labels (project, repo_list):
             url = 'https://api.github.com/repos/%s/%s/labels' % (settings.OWNER, repo)
             payload = {'name': label, 'color': settings.label_dictionnary[label]}
             r = requests.post(url, headers=headers, data=json.dumps(payload))
-            print "called %s for label %s" % (r.url, label)
+            print ("called %s for label %s" % (r.url, label))
             if args.verbose:
-                print r.text
+                print (r.text)
 
 def repo_clean_labels(repo):
     url = 'https://api.github.com/repos/%s/%s/labels' % (settings.OWNER, repo)
@@ -57,9 +57,9 @@ def repo_clean_labels(repo):
         if l.get('name') not in settings.label_dictionnary:
             url = 'https://api.github.com/repos/%s/%s/labels/%s' % (settings.OWNER, repo, l.get('name'))
             r = requests.delete(url, headers=headers)
-            print "called %s to delete label %s" % (r.url, l.get('name'))
+            print ("called %s to delete label %s" % (r.url, l.get('name')))
             if args.verbose:
-                print r.text
+                print (r.text)
 
 epilog = 'Milestones:\n'
 for milestone in settings.milestone_list:
